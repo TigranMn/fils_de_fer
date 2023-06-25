@@ -6,7 +6,7 @@
 /*   By: tmnatsak <tmnatsak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 20:31:00 by tmnatsak          #+#    #+#             */
-/*   Updated: 2023/06/04 16:30:54 by tmnatsak         ###   ########.fr       */
+/*   Updated: 2023/06/25 17:48:49 by tmnatsak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,11 @@ void	ft_mlx_pixel_put(t_data *data, int x, int y, int color)
 {
 	char	*dst;
 
-	dst = data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8));
-	*(unsigned int *) dst = color;
+	if (data->addr && x <  1920 && y < 1080 && x > 0 && y > 0 )
+	{
+		dst = data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8));
+		*(unsigned int *) dst = color;
+	}
 }
 
 // void	get_zoomed(float *x, float*y, *float toX, float *toY)
@@ -69,6 +72,7 @@ void	draw_algo(float x, float y, float toX, float toY, t_fdf* fdf)
 
 	while ((int)(x - toX) || (int)(y - toY))
 	{
+		// printf("%f %f\n", x, y);
 		ft_mlx_pixel_put(&fdf->data, x, y, color);
 		x += x_step;
 		y += y_step;
