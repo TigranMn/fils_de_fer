@@ -6,7 +6,7 @@
 /*   By: tmnatsak <tmnatsak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 20:31:00 by tmnatsak          #+#    #+#             */
-/*   Updated: 2023/06/25 17:48:49 by tmnatsak         ###   ########.fr       */
+/*   Updated: 2023/10/16 20:00:35 by tmnatsak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,10 @@ void	ft_mlx_pixel_put(t_data *data, int x, int y, int color)
 {
 	char	*dst;
 
-	if (data->addr && x <  1920 && y < 1080 && x > 0 && y > 0 )
+	if (data->addr && x < 1920 && y < 1080 && x > 0 && y > 0)
 	{
-		dst = data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8));
+		dst = data->addr
+			+ (y * data->line_length + x * (data->bits_per_pixel / 8));
 		*(unsigned int *) dst = color;
 	}
 }
@@ -27,53 +28,67 @@ void	ft_mlx_pixel_put(t_data *data, int x, int y, int color)
 
 void	isometric(float *x, float *y, int z)
 {
-	float	prevX;
-	float	prevY;
-	
-	prevX = *x;
-	prevY = *y;
-	
- 	*x = (prevX - prevY) * cos(0.5);
-	*y = (prevX + prevY) * sin(0.5) - z;
+	float	prev_x;
+	float	prev_y;
+
+	prev_x = *x;
+	prev_y = *y;
+	*x = (prev_x - prev_y) * cos(0.5);
+	*y = (prev_x + prev_y) * sin(0.5) - z;
 }
 
-void	draw_algo(float x, float y, float toX, float toY, t_fdf* fdf)
+int	get_color(int z)
+{
+	if (abs(z) > 300)
+		return (0x92f5c0);
+	if (abs(z) > 200)
+		return (0x9c42f5);
+	if (abs(z) > 80)
+		return (0x4287f5);
+	if (abs(z) > 20)
+		return (0xff0000);
+	if (abs(z) > 0)
+		return (0x42f587);
+	return (0xffffff);
+}
+
+void	final_draw(t_fdf *fdf, float x, float y, int z)
+{
+	ft_mlx_pixel_put(
+		&fdf->data,
+		(x + 960 - (sqrt((pow(fdf->width, 2) + pow(fdf->height, 2))) / 2)
+			* fdf->view.zoom / 4),
+		(y + 540 - (sqrt((pow(fdf->width, 2) + pow(fdf->height, 2))) / 2)
+			* fdf->view.zoom / 2), get_color(z));
+}
+
+void	draw_algo(float x, float y, float toX, float toY, t_fdf *fdf)
 {
 	float	x_step;
 	float	y_step;
 	float	max;
 	int		z;
-	int		toZ;
-	int		color;
+	int		to_z;
 
 	z = fdf->map[(int)y][(int)x];
-	toZ = fdf->map[(int)(toY)][(int)(toX)];
-	if (z || toZ)
-		color = 0xff00000;
-	else 
-		color = 0xffffff;
+	to_z = fdf->map[(int)(toY)][(int)(toX)];
 	x *= fdf->view.zoom;
 	y *= fdf->view.zoom;
 	toX *= fdf->view.zoom;
 	toY *= fdf->view.zoom;
+	isometric(&x, &y, z);
+	isometric(&toX, &toY, to_z);
 	x_step = toX - x;
 	y_step = toY - y;
-	isometric(&x, &y, z);
-	isometric(&toX, &toY, toZ);
-	if (x_step > y_step)
-		max = x_step;
+	if (fabsf(x_step) > fabsf(y_step))
+		max = fabsf(x_step);
 	else
-		max = y_step;
-	if (max < 0)
-		max *= -1;
-
+		max = fabsf(y_step);
 	x_step /= max;
 	y_step /= max;
-
 	while ((int)(x - toX) || (int)(y - toY))
 	{
-		// printf("%f %f\n", x, y);
-		ft_mlx_pixel_put(&fdf->data, x, y, color);
+		final_draw(fdf, x, y, z);
 		x += x_step;
 		y += y_step;
 	}
@@ -82,7 +97,7 @@ void	draw_algo(float x, float y, float toX, float toY, t_fdf* fdf)
 void	draw(t_fdf *fdf)
 {
 	int	i;
-	int	j; 
+	int	j;
 
 	i = 0;
 	while (i < fdf->height)

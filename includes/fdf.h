@@ -6,7 +6,7 @@
 /*   By: tmnatsak <tmnatsak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/27 18:05:12 by tmnatsak          #+#    #+#             */
-/*   Updated: 2023/06/04 16:29:25 by tmnatsak         ###   ########.fr       */
+/*   Updated: 2023/10/16 19:45:58 by tmnatsak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <stdio.h>
 # include <unistd.h>
 # include <mlx.h>
+# include "./keys.h"
 
 typedef struct t_data {
 	void	*img;
@@ -27,18 +28,33 @@ typedef struct t_data {
 }				t_data;
 
 typedef struct t_view {
-	int	zoom;
+	float	zoom;
 }	t_view;
 
-typedef struct t_fdf {
-	int		height;
-	int		width;
-	int		**map;
-	t_view	view;
-	t_data	data;
+typedef struct key_values
+{
+	int	x;
+	int	y;
+	int	z;
+}	t_key_values;
 
-	void	*mlx;
-	void	*mlx_win;
+typedef struct t_points
+{
+	float	x;
+	float	y;
+	float	to_x;
+	float	to_y;
+}	t_points;
+
+typedef struct t_fdf {
+	int			height;
+	int			width;
+	int			**map;
+	t_view		view;
+	t_data		data;
+
+	void		*mlx;
+	void		*mlx_win;
 }	t_fdf;
 
 void	read_file(char *file, t_fdf *fdf);
@@ -52,7 +68,9 @@ int		is_digit(char *str);
 char	*ft_strtrim(char const *s1, char const *set);
 void	ft_mlx_pixel_put(t_data *data, int x, int y, int color);
 void	draw(t_fdf *fdf);
-void	draw_algo(float x, float y, float toX, float toY, t_fdf* fdf);
-
+void	draw_algo(t_points points, float toX, float toY, t_fdf *fdf);
+int		close_window(t_fdf *fdf);
+void	free_map(t_fdf *fdf);
+int		key_press(int key, t_fdf *fdf);
 
 #endif

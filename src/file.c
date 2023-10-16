@@ -6,7 +6,7 @@
 /*   By: tmnatsak <tmnatsak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/28 00:00:53 by tmnatsak          #+#    #+#             */
-/*   Updated: 2023/06/04 16:24:59 by tmnatsak         ###   ########.fr       */
+/*   Updated: 2023/10/07 20:55:19 by tmnatsak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static void	fill_map(int **map, t_fdf *fdf, int fd)
 	int		j;
 	char	**splitted;
 	char	*line;
-	
+
 	i = 0;
 	while (i < (*fdf).height)
 	{
@@ -96,9 +96,11 @@ void	get_wh(char *file, t_fdf *fdf)
 
 void	read_file(char *file, t_fdf *fdf)
 {
-	int	i = 0;
-	int	j = 0;
-	get_wh(file, fdf);
+	int	i;
+	int	j;
 
+	i = 0;
+	j = 0;
+	get_wh(file, fdf);
 	fdf->map = get_map(file, fdf);
 }

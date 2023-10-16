@@ -6,7 +6,7 @@
 /*   By: tmnatsak <tmnatsak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/27 15:42:27 by tmnatsak          #+#    #+#             */
-/*   Updated: 2023/06/03 21:36:34 by tmnatsak         ###   ########.fr       */
+/*   Updated: 2023/10/07 23:09:39 by tmnatsak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,4 +76,20 @@ void	free_2d_int_arr(int **split, int i)
 	while (i--)
 		free(split[i]);
 	free(split);
+}
+
+int	close_window(t_fdf *fdf)
+{
+	int	i;
+
+	i = 0;
+	while (i < fdf->height)
+	{
+		free(fdf->map[i]);
+		i++;
+	}
+	free(fdf->map);
+	mlx_destroy_image(fdf->mlx, fdf->data.img);
+	mlx_destroy_window(fdf->mlx, fdf->mlx_win);
+	exit(0);
 }
