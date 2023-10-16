@@ -6,7 +6,7 @@
 /*   By: tmnatsak <tmnatsak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 20:31:00 by tmnatsak          #+#    #+#             */
-/*   Updated: 2023/10/16 20:00:35 by tmnatsak         ###   ########.fr       */
+/*   Updated: 2023/10/16 20:06:26 by tmnatsak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void	final_draw(t_fdf *fdf, float x, float y, int z)
 			* fdf->view.zoom / 2), get_color(z));
 }
 
-void	draw_algo(float x, float y, float toX, float toY, t_fdf *fdf)
+void	draw_algo(t_points points, float toX, float toY, t_fdf *fdf)
 {
 	float	x_step;
 	float	y_step;
@@ -70,48 +70,47 @@ void	draw_algo(float x, float y, float toX, float toY, t_fdf *fdf)
 	int		z;
 	int		to_z;
 
-	z = fdf->map[(int)y][(int)x];
+	z = fdf->map[(int)points.x][(int)points.y];
 	to_z = fdf->map[(int)(toY)][(int)(toX)];
-	x *= fdf->view.zoom;
-	y *= fdf->view.zoom;
+	points.x *= fdf->view.zoom;
+	points.y *= fdf->view.zoom;
 	toX *= fdf->view.zoom;
 	toY *= fdf->view.zoom;
-	isometric(&x, &y, z);
+	isometric(&points.y, &points.x, z);
 	isometric(&toX, &toY, to_z);
-	x_step = toX - x;
-	y_step = toY - y;
+	x_step = toX - points.y;
+	y_step = toY - points.x;
 	if (fabsf(x_step) > fabsf(y_step))
 		max = fabsf(x_step);
 	else
 		max = fabsf(y_step);
 	x_step /= max;
 	y_step /= max;
-	while ((int)(x - toX) || (int)(y - toY))
+	while ((int)(points.y - toX) || (int)(points.x - toY))
 	{
-		final_draw(fdf, x, y, z);
-		x += x_step;
-		y += y_step;
+		final_draw(fdf, points.y, points.x, z);
+		points.y += x_step;
+		points.x += y_step;
 	}
 }
 
 void	draw(t_fdf *fdf)
 {
-	int	i;
-	int	j;
+	t_points points;
 
-	i = 0;
-	while (i < fdf->height)
+	points.x = 0;
+	while (points.x < fdf->height)
 	{
-		j = 0;
-		while (j < fdf->width)
+		points.y = 0;
+		while (points.y < fdf->width)
 		{
-			if (i < fdf->height - 1)
-				draw_algo(j, i, j, i + 1, fdf);
-			if (j < fdf->width - 1)
-				draw_algo(j, i, j + 1, i, fdf);
-		j++;
+			if (points.x < fdf->height - 1)
+				draw_algo(points, points.y, points.x + 1, fdf);
+			if (points.y < fdf->width - 1)
+				draw_algo(points, points.y + 1, points.x, fdf);
+		points.y++;
 		}
-		i++;
+		points.x++;
 	}
 	mlx_put_image_to_window(fdf->mlx, fdf->mlx_win, fdf->data.img, 0, 0);
 }
