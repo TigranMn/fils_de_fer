@@ -1,33 +1,30 @@
 NAME			= fdf
-SRC_DIR 		= src
+
+SRC_DIR			= src
+
 SRCS			= $(wildcard $(SRC_DIR)/*.c)
-HEADERS			= $(wildcard includes/*.h)
-OBJ_DIR			= obj
-OBJS			= $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRCS))
-INCS			= -Iincludes
-CC				= cc 
-RM				= rm -rf
-CFLAGS			= -Wall -Wextra -Werror  #-fsanitize=address -g
-MINILIBX_FLAGS	= -lmlx -framework AppKit -framework OpenGL
-MK				= mkdir -p
 
-all:			$(OBJ_DIR) $(NAME)
+HEADER			= $(wildcard includes/*.h)
 
-$(OBJ_DIR): $(SRC_DIR)
-	$(MK) $(OBJ_DIR)
+OBJS			= ${SRCS:.c=.o}
 
-$(OBJ_DIR)/%.o:	$(SRC_DIR)/%.c $(HEADERS)
-	$(CC) $(CFLAGS) $(INCS) $(MINILIBX_FLAGS) -c $< -o $@
+INCS			= -I
 
-$(NAME):		$(OBJS)
-				$(CC) $(CFLAGS) $(INCS) -o $(NAME) $(OBJS)
+CFLAGS			= -Wall -Wextra -Werror -fsanitize=address -g
 
-clean:			
-				$(RM) $(OBJ_DIR)
+FMS				= -framework OpenGL -framework AppKit -lmlx -lm 
 
-fclean:			clean
-				$(RM) $(NAME)
-				
-re:				fclean all
+all:	${NAME}
 
-.PHONY:			all clean fclean re bonus
+${NAME}: ${OBJS}
+	$(CC) $(CFLAGS) $(OBJS) $(FMS) -o ${NAME}
+
+clean:
+	rm -f $(OBJS)
+
+fclean: clean
+	rm -f ${NAME}
+
+re: 	fclean all
+
+.PHONY: all clean fclean mlx
