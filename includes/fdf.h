@@ -6,7 +6,7 @@
 /*   By: tmnatsak <tmnatsak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/27 18:05:12 by tmnatsak          #+#    #+#             */
-/*   Updated: 2023/10/16 19:45:58 by tmnatsak         ###   ########.fr       */
+/*   Updated: 2023/10/16 20:14:08 by tmnatsak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,5 +72,7 @@ void	draw_algo(t_points points, float toX, float toY, t_fdf *fdf);
 int		close_window(t_fdf *fdf);
 void	free_map(t_fdf *fdf);
 int		key_press(int key, t_fdf *fdf);
+void	zoom(t_points *points, t_fdf *fdf, float *toX, float *toY);
+int		get_color(int z);
 
 #endif

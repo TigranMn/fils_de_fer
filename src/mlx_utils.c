@@ -6,7 +6,7 @@
 /*   By: tmnatsak <tmnatsak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 20:31:00 by tmnatsak          #+#    #+#             */
-/*   Updated: 2023/10/16 20:06:26 by tmnatsak         ###   ########.fr       */
+/*   Updated: 2023/10/16 20:13:45 by tmnatsak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,21 +37,6 @@ void	isometric(float *x, float *y, int z)
 	*y = (prev_x + prev_y) * sin(0.5) - z;
 }
 
-int	get_color(int z)
-{
-	if (abs(z) > 300)
-		return (0x92f5c0);
-	if (abs(z) > 200)
-		return (0x9c42f5);
-	if (abs(z) > 80)
-		return (0x4287f5);
-	if (abs(z) > 20)
-		return (0xff0000);
-	if (abs(z) > 0)
-		return (0x42f587);
-	return (0xffffff);
-}
-
 void	final_draw(t_fdf *fdf, float x, float y, int z)
 {
 	ft_mlx_pixel_put(
@@ -72,10 +57,7 @@ void	draw_algo(t_points points, float toX, float toY, t_fdf *fdf)
 
 	z = fdf->map[(int)points.x][(int)points.y];
 	to_z = fdf->map[(int)(toY)][(int)(toX)];
-	points.x *= fdf->view.zoom;
-	points.y *= fdf->view.zoom;
-	toX *= fdf->view.zoom;
-	toY *= fdf->view.zoom;
+	zoom(&points, fdf, &toX, &toY);
 	isometric(&points.y, &points.x, z);
 	isometric(&toX, &toY, to_z);
 	x_step = toX - points.y;
@@ -96,7 +78,7 @@ void	draw_algo(t_points points, float toX, float toY, t_fdf *fdf)
 
 void	draw(t_fdf *fdf)
 {
-	t_points points;
+	t_points	points;
 
 	points.x = 0;
 	while (points.x < fdf->height)
